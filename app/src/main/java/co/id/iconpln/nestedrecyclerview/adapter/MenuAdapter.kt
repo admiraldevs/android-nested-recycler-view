@@ -3,6 +3,8 @@ package co.id.iconpln.nestedrecyclerview.adapter
 import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import co.id.iconpln.nestedrecyclerview.R
+import co.id.iconpln.nestedrecyclerview.inflate
 
 class MenuAdapter(private val data: List<Any>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -20,7 +22,11 @@ class MenuAdapter(private val data: List<Any>): RecyclerView.Adapter<RecyclerVie
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-
+        return when(viewType){
+            ITEM_HEADER -> MenuHeaderHolder(parent.inflate((R.layout.item_header)))
+            ITEM_MENU -> MenuItemHolder(parent.inflate(R.layout.item_menu))
+            else -> throw throw IllegalArgumentException("Undefinied view type")
+        }
     }
 
     override fun getItemCount(): Int {
