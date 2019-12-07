@@ -10,6 +10,10 @@ class MenuAdapter(private val data: List<Any>): RecyclerView.Adapter<RecyclerVie
         private const val ITEM_MENU = 1
     }
 
+    override fun getItemViewType(position: Int): Int {
+        
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
     }
