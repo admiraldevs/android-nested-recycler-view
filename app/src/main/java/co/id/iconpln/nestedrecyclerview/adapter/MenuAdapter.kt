@@ -15,6 +15,14 @@ class MenuAdapter(private val data: List<Any>): RecyclerView.Adapter<RecyclerVie
         private const val ITEM_MENU = 1
     }
 
+    fun setAddedItemListener(added: (MenuItem,Int) -> Unit){
+        addedListener = added
+    }
+
+    fun setRemoveItemListener(remove: (MenuItem, Int) -> Unit) {
+        removedListener = remove
+    }
+
     override fun getItemViewType(position: Int): Int {
         return when(data[position]) {
             is String -> ITEM_HEADER
