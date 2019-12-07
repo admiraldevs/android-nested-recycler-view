@@ -9,6 +9,8 @@ import co.id.iconpln.nestedrecyclerview.inflate
 class MenuAdapter(private val data: List<Any>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object{
+        private lateinit var addedListener: ((MenuItem, Int) -> Unit)
+        private lateinit var removedListener: ((MenuItem, Int) -> Unit)
         private const val ITEM_HEADER = 0
         private const val ITEM_MENU = 1
     }
