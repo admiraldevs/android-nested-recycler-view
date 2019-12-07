@@ -1,9 +1,9 @@
 package co.id.iconpln.nestedrecyclerview.adapter
 
-import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import co.id.iconpln.nestedrecyclerview.R
+import co.id.iconpln.nestedrecyclerview.entity.MenuItem
 import co.id.iconpln.nestedrecyclerview.inflate
 
 class MenuAdapter(private val data: List<Any>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -34,7 +34,17 @@ class MenuAdapter(private val data: List<Any>): RecyclerView.Adapter<RecyclerVie
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-
+        when(holder.itemViewType) {
+            ITEM_HEADER -> {
+                val headerHolder = holder as MenuHeaderHolder
+                headerHolder.bindContent(data[position] as String)
+            }
+            ITEM_MENU -> {
+                val itemHolder = holder as MenuItemHolder
+                itemHolder.bindContent(data[position] as MenuItem)
+            }
+            else -> throw IllegalArgumentException("Undefinied view type")
+        }
     }
 
 }
