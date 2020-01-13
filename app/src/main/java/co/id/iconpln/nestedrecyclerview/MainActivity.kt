@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var menuData = listOf<Any>()
+    private var menuData = mutableListOf<Any>()
     private var totalOrder = 0
     private var totalPrice = 0
 
@@ -25,13 +25,13 @@ class MainActivity : AppCompatActivity() {
             val menu = menuItem.copy()
             menu.count = itemCount + 1
 
-            (menuData as MutableList<Any>)[position] = menu
+            menuData[position] = menu
             menuAdapter.notifyItemChanged(position, menu)
 
             totalPrice += menu.price
             totalOrder++
 
-            tvReviewBooking.text = String.format(getString(R.string.review_booking))
+            tvReviewBooking.text = String.format(getString(R.string.review_booking), totalOrder, totalPrice)
         }
 
         menuAdapter.setRemoveItemListener { menuItem, position ->
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
             val menu = menuItem.copy()
             menu.count = itemCount - 1
 
-            (menuData as MutableList<Any>)[position] = menu
+            menuData[position] = menu
             menuAdapter.notifyItemChanged(position, menu)
 
             totalPrice -= menu.price
@@ -57,9 +57,5 @@ class MainActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this.context)
             adapter = menuAdapter
         }
-
-        // menuItem.hasFixedSize()
-        // menuItem.layoutManager = LinearLayoutManager(this)
-        // menuItem.adapter = menuAdapter
     }
 }

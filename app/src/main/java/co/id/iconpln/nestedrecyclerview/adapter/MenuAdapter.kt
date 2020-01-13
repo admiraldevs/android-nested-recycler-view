@@ -1,21 +1,23 @@
 package co.id.iconpln.nestedrecyclerview.adapter
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import co.id.iconpln.nestedrecyclerview.R
 import co.id.iconpln.nestedrecyclerview.entity.MenuItem
 import co.id.iconpln.nestedrecyclerview.inflate
 
-class MenuAdapter(private val data: List<Any>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MenuAdapter(private val data: List<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    companion object{
+    companion object {
         private lateinit var addedListener: ((MenuItem, Int) -> Unit)
         private lateinit var removedListener: ((MenuItem, Int) -> Unit)
+
         private const val ITEM_HEADER = 0
         private const val ITEM_MENU = 1
     }
 
-    fun setAddedItemListener(added: (MenuItem,Int) -> Unit){
+    fun setAddedItemListener(added: (MenuItem, Int) -> Unit) {
         addedListener = added
     }
 
@@ -23,36 +25,60 @@ class MenuAdapter(private val data: List<Any>): RecyclerView.Adapter<RecyclerVie
         removedListener = remove
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return when(data[position]) {
-            is String -> ITEM_HEADER
-            is MenuItem -> ITEM_MENU
-            else -> throw IllegalArgumentException("Undefinied view type.")
-        }
-    }
+    override fun getItemCount() = data.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when(viewType){
-            ITEM_HEADER -> MenuHeaderHolder(parent.inflate((R.layout.item_header)))
+        return when (viewType) {
+            ITEM_HEADER -> MenuHeaderHolder(parent.inflate(R.layout.item_header))
             ITEM_MENU -> MenuItemHolder(parent.inflate(R.layout.item_menu))
-            else -> throw throw IllegalArgumentException("Undefinied view type")
+            else -> throw throw IllegalArgumentException("Undefined view type")
         }
     }
 
-    override fun getItemCount(): Int = data.size
+    override fun getItemViewType(position: Int): Int {
+        return when (data[position]) {
+            is String -> ITEM_HEADER
+            is MenuItem -> ITEM_MENU
+            else -> throw IllegalArgumentException("Undefined view type")
+        }
+    }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when(holder.itemViewType) {
-            ITEM_HEADER -> {
-                val headerHolder = holder as MenuHeaderHolder
-                headerHolder.bindContent(data[position] as String)
+        if (holder.itemViewType == ITEM_HEADER) {
+            val headerHolder = holder as MenuHeaderHolder
+            headerHolder.itemHeader.text = data[position] as String
+        } else {
+            val menuItem = data[position] as MenuItem
+
+            val itemHolder = holder as MenuItemHolder
+            itemHolder.itemCount.text = menuItem.count.toString()
+            itemHolder.itemName.text = menuItem.name
+            itemHolder.itemPrice.text = "Rp. ${menuItem.price}"
+            itemHolder.btnAdd.setOnClickListener {
+                addedListener(menuItem, position)
             }
-            ITEM_MENU -> {
-                val itemHolder = holder as MenuItemHolder
-                itemHolder.bindContent(data[position] as MenuItem)
+            itemHolder.btnRemove.setOnClickListener {
+                removedListener(menuItem, position)
             }
-            else -> throw IllegalArgumentException("Undefinied view type")
+
+            if (menuItem.count == 0) {
+                itemHolder.btnRemove.visibility = View.GONE
+                itemHolder.itemCount.visibility = View.GONE
+            } else {
+                itemHolder.btnRemove.visibility = View.VISIBLE
+                itemHolder.itemCount.visibility = View.VISIBLE
+            }
+            when (holder.itemViewType) {
+                ITEM_HEADER -> {
+                    val headerHolder = holder as MenuHeaderHolder
+                    headerHolder.bindContent(data[position] as String)
+                }
+                ITEM_MENU -> {
+                    val itemHolder = holder as MenuItemHolder
+                    itemHolder.bindContent(data[position] as MenuItem)
+                }
+                else -> throw IllegalArgumentException("Undefined view type")
+            }
         }
     }
-
 }
